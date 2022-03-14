@@ -1,3 +1,4 @@
+
 $(window).on("load",function(){
     let token = getCookie("refreshToken");
     function checkLogin(){
@@ -15,5 +16,15 @@ $(window).on("load",function(){
         }, 25000);
     }
     checkLogin();
-    
+    const nickName = $("#nickName_login").val();
+    if(nickName)
+        socket.emit("user-login-req",nickName);
+    socket.on("user-login-res",function(data){
+        $(".chat__boxed-message").append(`
+            <div class="chat-item">
+                <span class="chat-user">${data}: </span>
+                <span class="chat-content"> Vừa online</span>
+            </div>
+        `)
+    })
 })

@@ -33,7 +33,9 @@ app.set('views', path.join(__dirname, 'resources/views'));
 var userOnline = [];
 
 io.on('connection', socket => {
-    
+    socket.on("user-login-req", function(data){
+        io.sockets.emit("user-login-res", data);
+    })
 });
 
 app.get('/', (req, res) => {
