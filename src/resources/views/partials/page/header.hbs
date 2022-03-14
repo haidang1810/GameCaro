@@ -20,10 +20,11 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-4" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-user"></i> Hải Đăng </a>
+            <input type="hidden" id="nickName_login" value="{{data.nickName}}">
+            <i class="fas fa-user"></i> {{data.nickName}} </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-info" aria-labelledby="navbarDropdownMenuLink-4">
                 <a class="dropdown-item" href="#">Hồ sơ</a>
-                <a class="dropdown-item" href="#">Đăng xuất</a>
+                <button class="dropdown-item" id="btn-logout">Đăng xuất</button>
             </div>
         </li>
         </ul>

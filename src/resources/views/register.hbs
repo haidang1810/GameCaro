@@ -1,12 +1,12 @@
 <div class="container-fluid" id="login-page">
     <div class="row justify-content-center">
         <div class="col-xl-4 col-md-8 col-sm-12 row-container p-4 px-5">
-            <form method="POST" class="form-login">
+            <form method="POST" class="form-register">
                 <h1 class="form__title">Đăng ký</h1>
                 <div class="form-group">
-                    <label for="nickName" >Họ và tên</label>
+                    <label for="nickName" >Biệt danh</label>
                     <div class="form__input">
-                        <input type="text" id="nickName" rules='required|min:6|max:50' name="nickName" class="form-control mb-2 shadow-none form__input-text" placeholder="Nhập biệt danh...">
+                        <input type="text" id="nickName" rules='required|min:4|max:40' name="nickName" class="form-control mb-2 shadow-none form__input-text" placeholder="Nhập biệt danh...">
                         <i class="fa fa-user form__input-icon"></i>
                         <div class="form__input-line"></div>
                     </div>
@@ -37,7 +37,7 @@
                     </label>
                 </div>
                 <div class="button">
-                    <button id="submitLogin" class="wpcf7-form-control wpcf7-submit mb-2">Đăng ký</button>
+                    <button id="submitReg" type="submit" class="wpcf7-form-control wpcf7-submit mb-2">Đăng ký</button>
                 </div>
             </form>
             <div class="form__footer form__login-text">
@@ -47,3 +47,4 @@
         </div>
     </div>
 </div>
+<script src="/js/register.js"></script>

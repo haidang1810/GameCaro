@@ -93,7 +93,7 @@
     display: block;
     background-color: #323259 !important;
     color: #fff;
-    height: 120px;
+    height: 136px;
     font-size: 14px;
     width: calc(25% - 30px) !important;
     margin: 15px;
@@ -120,12 +120,27 @@
     position: absolute;
     left: 15px;
     top: 15px;
+    
 }
-/* .room__item-title{
 
-} */
 .room__item-user{
     top: 35px;
+    list-style: none;
+}
+.player{
+    position: absolute;
+    left: 100px;
+    display: block;
+    white-space: nowrap;
+    width: 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.player-one{
+    top: 35px;
+}
+.player-two{
+    top: 55px;
 }
 .room__item-btn{
     width: 45% !important;
