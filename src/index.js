@@ -53,6 +53,8 @@ app.get('/', (req, res) => {
                 }else return res.render('login');
             })
     }
+    const cookieRefreshToken = req.cookies.refreshToken;
+    if(!cookieRefreshToken) return res.render('login');
     const cookie = req.cookies.accessToken;
     if(!cookie) return res.render('login');
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
@@ -173,6 +175,8 @@ app.post('/register', (req, res) => {
         })    
 });
 app.get('/room', (req, res) => {
+    const cookieRefreshToken = req.cookies.refreshToken;
+    if(!cookieRefreshToken) return res.redirect("/");
     var id = req.query.id;
     const cookie = req.cookies.accessToken;
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, dataToken) => {
@@ -187,6 +191,8 @@ app.get('/room', (req, res) => {
     });
 })
 app.get('/home', (req, res) => {
+    const cookieRefreshToken = req.cookies.refreshToken;
+    if(!cookieRefreshToken) return res.redirect("/");
     const cookie = req.cookies.accessToken;
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
         if (err) return res.redirect("/");

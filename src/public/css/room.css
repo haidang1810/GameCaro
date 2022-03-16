@@ -50,3 +50,22 @@
     font-size: 30px;
     margin-bottom: 0;
 }
+.room__game-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.room__game-header i {
+    font-size: 20px;
+    color: #CBCBD5;
+    cursor: pointer;
+}
+.form-check label,
+.form-check input[type=radio]  {
+    cursor: pointer;
+}
+.btn-start-game,
+.btn-ready{
+    color: #fff;
+    background-color: #A97DFF;
+}

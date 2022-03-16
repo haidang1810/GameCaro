@@ -70,15 +70,14 @@ $(window).on("load",function(){
     })
     socketRoom.emit("listRoom-req","");
     socketRoom.on("listRoom-res",function(data){
+        $(".room").empty();
         data.forEach((value,index) => {
             let isPassword = "";
             if(value.password)
                 isPassword = `<div class="room__item-status"><i class="fa fa-lock"></i></div>
-                    <input type='hidden' id='room-password' value='${value.password}'>
                 `;
             else{
                 isPassword = `<div class="room__item-status hide"><i class="fa fa-lock"></i></div>
-                    <input type='hidden' id='room-password' value=''>
                 `;
             }
             let html = `
@@ -92,24 +91,32 @@ $(window).on("load",function(){
             
 
             if(!value.player[1]){
-                html += `<a class="btn room__item-btn" href='/room/?id=${index+1}' id='${index}'>Vào</a>`;
+                if(value.password)
+                    html += `<a class="btn room__item-btn" ' 
+                    roomIndex='${index}' data-toggle="modal" href='' data-target="#joinRoomModal">Vào</a>`;
+                else
+                html += `<a class="btn room__item-btn" data-toggle="" data-target="" href='/room/?id=${index+1}' 
+                    roomIndex='${index}' >Vào</a>`;
             }
             html += "</div>";
             $(".room").append(html);
         })
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
+        $(".room__item-btn").click(function(){
+            index = $(this).attr("roomIndex");
         })
     })
     socketRoom.on("update-room-res",function(data){
-        console.log("Nhận res update",data);
         var roomItem = `.room__item-${data.roomIndex}`;
         if(data.room.password){
-            $(roomItem).children("#room-password").val(data.room.password);
             $(roomItem).children(".room__item-status").removeClass("hide");
+            $(roomItem).children(".room__item-btn").attr('href','');
+            $(roomItem).children(".room__item-btn").attr('data-toggle','modal');
+            $(roomItem).children(".room__item-btn").attr('data-target','#joinRoomModal');
         }else{
-            $(roomItem).children("#room-password").val("");
             $(roomItem).children(".room__item-status").addClass("hide");
+            $(roomItem).children(".room__item-btn").attr('href',`/room/?id=${data.roomIndex+1}`);
+            $(roomItem).children(".room__item-btn").attr('data-target','');
+            $(roomItem).children(".room__item-btn").attr('data-toggle','');
         }
         $(roomItem).children("#player-name-host").attr('title',data.room.host[1]);
         $(roomItem).children("#player-name-host").html(data.room.host[1]);
@@ -121,5 +128,38 @@ $(window).on("load",function(){
             $(roomItem).children(".room__item-btn").addClass("hide");
         }else
             $(roomItem).children(".room__item-btn").removeClass("hide");
+
+        $(".room__item-btn").click(function(){
+            index = $(this).attr("roomIndex");
+        })
+    })
+    $("#submit-create-rooms").click(function(){
+        let pass = $("#input-pass-create").val();
+        socketRoom.emit("create-room-req", pass);
+    })
+    socketRoom.on("create-room-res",function(data){
+        location.href = `/room/?id=${data+1}`;
+    })
+    var index = 0;
+    
+    $("#submit-join-rooms").click(function(){
+        let data = {
+            roomIndex: index,
+            password: $("#input-pass-join").val()
+        }
+        socketRoom.emit("pass-join-room-req", data);
+    })
+    socketRoom.on("pass-join-room-res",function(data){
+        if(data.status==1){
+            location.href = `/room/?id=${data.roomIndex+1}`;
+        }else{
+            Toast.fire({
+                icon: 'error',
+                title: data.msg,
+                background: 'rgba(220, 52, 73, 0.9)',
+                color: '#ffffff',
+                timer: 2500
+            })
+        }
     })
 })

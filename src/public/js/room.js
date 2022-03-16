@@ -38,11 +38,9 @@ $(window).on("load",function(){
         }, 25000);
     }
     checkLogin();
-    var player = "";
-    var value_button = "";
     const nickName = $("#nickName_login").val();
     const socketRoom = io('http://localhost:2500/', {transports: ['websocket', 'polling', 'flashsocket']});
-    const roomIndex = $(".room-title").attr('id');
+    const roomIndex = $(".room-title").attr('roomIndex');
     let data_join_room = {
         nickName,
         roomIndex
@@ -50,12 +48,8 @@ $(window).on("load",function(){
     socketRoom.emit("user-join-room-req", data_join_room);
     socketRoom.on("user-join-room-res",function(data){
         if(data.status==1){
-            if(data.player=="host"){
-                player="host";
-                value_button = "O";
-            }else{
-                player="player";
-                value_button = "X";
+            if(data.player=="player"){
+                $(".room__game-header i").addClass("hide");
             }
         }else if(data.status==2){
             Toast.fire({
@@ -72,20 +66,17 @@ $(window).on("load",function(){
         }else{
             location.href = "/";
         }
-        console.log(player);
     })
     socketRoom.on("change-position-res", function(data){
-        player="host";
-        value_button = "O";
         $(".info-player-two").children(".player-name").html("");
         $(".info-player-two").children(".total-played").html("");
         $(".info-player-two").children(".room-wined").html("");
         $(".info-player-one").children(".player-name").html(`Biệt danh: ${data.nickName}`);
         $(".info-player-one").children(".total-played").html(`Số trận đã chơi: ${data.winTotal+data.lostTotal}`);
         $(".info-player-one").children(".room-wined").html(data.roomWined);
+        $(".room__game-header i").removeClass("hide");
     })
     socketRoom.on("data-player-rooms-res",function(data){
-        console.log("nhân dc data", data);
         $(".info-player-two").children(".player-name").html(`Biệt danh: ${data.player.nickName}`);
         $(".info-player-two").children(".total-played").html(`Số trận đã chơi: ${data.player.winTotal+data.player.lostTotal}`);
         $(".info-player-two").children(".room-wined").html(data.player.roomWined);
@@ -118,44 +109,104 @@ $(window).on("load",function(){
             }
         }
     }
-    function updateBoard(r,c,value){
-        $("#game-board").empty();
-        for(i=0;i<ROW;i++){
-            for(j=0;j<COL;j++){
-                if(i==r && j==c){
-                    if(value=="X")
-                        $("#game-board").append(`
-                            <button class='game-board-square player-x' r='${i}' c='${j}'>X</button>
-                        `);
-                    else
-                        $("#game-board").append(`
-                            <button class='game-board-square player-o' r='${i}' c='${j}'>O</button>
-                        `);
-                }
-                else{
-                    if(board[i][j]!="NULL"){
-                        if(board[i][j]=="X")
-                            $("#game-board").append(`
-                                <button class='game-board-square player-x' r='${i}' c='${j}'>X</button>
-                            `);
-                        else
-                            $("#game-board").append(`
-                                <button class='game-board-square player-o' r='${i}' c='${j}'>O</button>
-                            `);
-                    }else $("#game-board").append(`
-                                <button class='game-board-square' r='${i}' c='${j}'></button>
-                            `);
-                    
-                }
-            }
-        }
-    }
+
     drawBoardButton();
 
     $(".game-board-square").click(function(){
         let r = $(this).attr('r');
         let c = $(this).attr('c');
-        board[r][c] = "X";
-        updateBoard(r,c,"X");
+        let data = {
+            r,
+            c,
+            roomIndex
+        }
+        socketRoom.emit("user-click-req",data);
+    })
+
+    $("#submit-setting-rooms").click(function(){
+        let password = $("#input-pass-setting").val();
+        let roomIndex = Number($(".room-title").attr("roomIndex") - 1 );
+        let playerFirst = $("#playerFirst").val();
+        let char =  $('input[name="char"]:checked').val();
+        let data = {
+            password,
+            roomIndex,
+            playerFirst,
+            char
+        }
+        socketRoom.emit("change-setting-room-req", data);
+    })
+    socketRoom.on("change-setting-room-res",function(data){
+        if(data.status==1){
+            Toast.fire({
+                icon: 'success',
+                title: 'Lưu cài đặt thành công!',
+                background: 'rgba(35, 147, 67, 0.9)',
+                color: '#ffffff',
+                timer: 1500
+            })
+        }else{
+            Toast.fire({
+                icon: 'error',
+                title: data.msg,
+                background: 'rgba(220, 52, 73, 0.9)',
+                color: '#ffffff',
+                timer: 2500
+            })
+        }
+    })
+    function updateBoard(data){
+        $("#game-board").empty();
+        for(i=0;i<ROW;i++){
+            for(j=0;j<COL;j++){
+                if(data[i][j]!="NULL"){
+                    if(data[i][j]=="X")
+                        $("#game-board").append(`
+                            <button class='game-board-square player-x' r='${i}' c='${j}'>${data[i][j]}</button>
+                        `);
+                    else
+                    $("#game-board").append(`
+                            <button class='game-board-square player-o' r='${i}' c='${j}'>${data[i][j]}</button>
+                        `);
+                }
+                else{
+                    $("#game-board").append(`
+                    <button class='game-board-square' r='${i}' c='${j}'></button>
+                `)
+                }
+            }
+        }
+    }
+    socketRoom.on("user-click-res",function(data){
+        if(data.status==1){
+            updateBoard(data.board);
+        }else{
+            Toast.fire({
+                icon: 'error',
+                title: data.msg,
+                background: 'rgba(220, 52, 73, 0.9)',
+                color: '#ffffff',
+                timer: 1000,
+            })
+        }
+        $(".game-board-square").click(function(){
+            let r = $(this).attr('r');
+            let c = $(this).attr('c');
+            let data = {
+                r,
+                c,
+                roomIndex
+            }
+            socketRoom.emit("user-click-req",data);
+        })
+    })
+
+    $(".btn-ready").click(function(){
+        socketRoom.emit("player-ready-req",roomIndex);
+    })
+    socketRoom.on("player-ready-res",function(data){
+        if(data){
+            $(".btn-ready").html("Bỏ sẵn sàng");
+        }else $(".btn-ready").html("Sẵn sàng");
     })
 })

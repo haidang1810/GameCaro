@@ -1,11 +1,15 @@
 <nav>{{> page/header}}</nav>
 <div class="container-fluid mb-3">
-    <h2 class="room-title" id="{{ data.id }}">Phòng {{ data.id }}</h2>
+    <div class="room__game-header">
+        <h2 class="room-title" roomIndex="{{ data.id }}">Phòng {{ data.id }}</h2>
+        <i class="fa fa-gear" data-toggle="modal" data-target="#settingModal"></i>
+    </div>
     <div class="main-game">
         <div class="info-player-one">
             <div class="player-name"></div>
             <div class="total-played"></div>
             <div class="room-wined"></div>
+            <button class="btn btn-start-game">Bắt đầu</button>
         </div>
         <div id="game-board">
 
@@ -14,6 +18,49 @@
             <div class="player-name"></div>
             <div class="total-played"></div>
             <div class="room-wined"></div>
+            <button class="btn btn-ready">Sẵn sàng</button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cài đặt phòng</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3 form-group">
+                        <label for="name-add-menu" class="form-label">Mật khẩu phòng</label>
+                        <input type="text" class="form-control"  id="input-pass-setting" autocomplete="off">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="">Người đi trước</label>
+                        <select class="form-control" id="playerFirst">
+                            <option value="host">Chủ phòng</option>
+                            <option value="player">Người chơi</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="">Nước cờ</label>
+                        <div class="form-check form-check">
+                            <input class="form-check-input" type="radio" name="char" id="inlineRadio1" value="X" checked>
+                            <label class="form-check-label" for="inlineRadio1">X</label>
+                        </div>
+                        <div class="form-check form-check">
+                            <input class="form-check-input" type="radio" name="char" id="inlineRadio2" value="O">
+                            <label class="form-check-label" for="inlineRadio2">O</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Huỷ</button>
+                    <button type="button" id="submit-setting-rooms" data-dismiss="modal" class="btn btn-primary" href="">Lưu</b>
+                </div>
+            </form>
         </div>
     </div>
 </div>
