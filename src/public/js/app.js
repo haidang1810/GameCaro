@@ -5,9 +5,6 @@ const Toast = Swal.mixin({
     showConfirmButton: false,
     timerProgressBar: true,
 })
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-})
 function setCookie(cname, cvalue, second=null) {
     if(second!=null){
         const d = new Date();

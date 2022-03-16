@@ -22,7 +22,7 @@ $(window).on('load',function(){
                             color: '#ffffff',
                             timer: 2000,
                             didClose: () => {
-                                location.href = '/room';
+                                location.href = '/home';
                             }
                         })
                     }else{

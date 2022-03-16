@@ -30,11 +30,13 @@ app.engine('hbs', engine({
 app.set('view engine','hbs');
 app.set('views', path.join(__dirname, 'resources/views'));
 
-var userOnline = [];
 
 io.on('connection', socket => {
     socket.on("user-login-req", function(data){
         io.sockets.emit("user-login-res", data);
+    })
+    socket.on("user-send-message", function(data){
+        io.sockets.emit("server-send-message", data);
     })
 });
 
@@ -46,7 +48,7 @@ app.get('/', (req, res) => {
                 if(data){
                     jwt.verify(rememberToken, process.env.ACCESS_TOKEN_SECRET, (err, dataRemember) => {
                         if(err) return res.render('login');
-                        return res.redirect('room/listRoom');
+                        return res.redirect('/home');
                     });
                 }else return res.render('login');
             })
@@ -55,7 +57,7 @@ app.get('/', (req, res) => {
     if(!cookie) return res.render('login');
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
         if(err) return res.render('login');
-        return res.redirect('room/listRoom');
+        return res.redirect('/home');
     });
     
 });
@@ -171,6 +173,20 @@ app.post('/register', (req, res) => {
         })    
 });
 app.get('/room', (req, res) => {
+    var id = req.query.id;
+    const cookie = req.cookies.accessToken;
+    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, dataToken) => {
+        let data = {
+            id,
+            nickName: dataToken.nickName
+        };
+        if (err) return res.redirect("/");
+        return res.render('room/room',{
+            data
+        });
+    });
+})
+app.get('/home', (req, res) => {
     const cookie = req.cookies.accessToken;
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
         if (err) return res.redirect("/");

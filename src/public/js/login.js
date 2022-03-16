@@ -10,7 +10,7 @@ $(window).on('load',function(){
                         setCookie('rememberToken',data.cookie,3*60*60);
                         setCookie('accessToken',data.accessToken,40);
                         setCookie('refreshToken',data.refreshToken);
-                        location.href = "/room";
+                        location.href = "/home";
                     }else{
                         Toast.fire({
                             icon: 'error',

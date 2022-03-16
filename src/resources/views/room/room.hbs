@@ -1,0 +1,20 @@
+<nav>{{> page/header}}</nav>
+<div class="container-fluid mb-3">
+    <h2 class="room-title" id="{{ data.id }}">Phòng {{ data.id }}</h2>
+    <div class="main-game">
+        <div class="info-player-one">
+            <div class="player-name"></div>
+            <div class="total-played"></div>
+            <div class="room-wined"></div>
+        </div>
+        <div id="game-board">
+
+        </div>
+        <div class="info-player-two">
+            <div class="player-name"></div>
+            <div class="total-played"></div>
+            <div class="room-wined"></div>
+        </div>
+    </div>
+</div>
+<script src="/js/room.js"></script>

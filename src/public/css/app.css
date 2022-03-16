@@ -143,6 +143,7 @@
     top: 55px;
 }
 .room__item-btn{
+    display: block;
     width: 45% !important;
     position: absolute;
     color: #fff;
@@ -150,4 +151,7 @@
     left: 50%;
     bottom: 12px;
     transform: translate(-50%,0);
+}
+.hide{
+    display: none !important;
 }

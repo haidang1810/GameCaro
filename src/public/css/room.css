@@ -1,0 +1,52 @@
+.main-game{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    padding-bottom: 50px;
+    margin-top: 0;
+}
+.info-player-one,
+.info-player-two{
+    margin: 20px;
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    margin-top: 0;
+}
+.room-wined{
+    color: #c2b901;
+    font-size: 22px;
+    font-weight: bold;
+}
+#game-board{
+    margin-top: 20px;
+    border: 1px solid #000;
+    box-shadow: 0 0 5px #000035;
+    width: 527px ;
+    height: 527px ;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+.game-board-square{
+    width: 35px;
+    height: 35px;
+    border: #000 1px solid;
+    outline: none;
+    background: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    
+}
+.player-x{
+    color: #fa3241;
+}
+.player-o{
+    color: #1521b5;
+}
+.room-title{
+    color: #fff;
+    font-size: 30px;
+    margin-bottom: 0;
+}
