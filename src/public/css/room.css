@@ -14,6 +14,7 @@
     text-align: center;
     margin-top: 0;
 }
+
 .room-wined{
     color: #c2b901;
     font-size: 22px;
@@ -69,3 +70,58 @@
     color: #fff;
     background-color: #A97DFF;
 }
+.circle-progress  {
+    margin: 50px auto;
+    height: 80px;
+    width: 80px;
+    background-color: #1A1B37;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+}
+.circular-progress {
+    position: relative;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(
+        #4d5bf9 360deg,
+        #cadcff 360deg
+    );
+}
+.circular-progress:before {
+    content: "";
+    position: absolute;
+    height: 84%;
+    width: 84%;
+    background-color: #ffffff;
+    border-radius: 50%;
+}
+.value-container {
+    position: relative;
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+    color: #231c3d;
+}
+.main-room-game{
+    position: relative;
+}
+.info__setting{
+    border: 1px solid #000;
+    box-shadow: 0 0 5px #000035;
+    padding: 10px 15px;
+    text-align: center;
+    color: #fff;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    right: 20px;
+    bottom: 110px;
+}
+.info__setting ul{
+    list-style: none;
+    font-size: 16px;
+}
+

@@ -1,5 +1,5 @@
 <nav>{{> page/header}}</nav>
-<div class="container-fluid mb-3">
+<div class="container-fluid mb-3 main-room-game">
     <div class="room__game-header">
         <h2 class="room-title" roomIndex="{{ data.id }}">Phòng {{ data.id }}</h2>
         <i class="fa fa-gear" data-toggle="modal" data-target="#settingModal"></i>
@@ -10,6 +10,11 @@
             <div class="total-played"></div>
             <div class="room-wined"></div>
             <button class="btn btn-start-game">Bắt đầu</button>
+            <div class="circle-progress">
+                <div class="circular-progress circular-progress-host">
+                    <div class="value-container value-container-host"></div>
+                </div>
+            </div>
         </div>
         <div id="game-board">
 
@@ -19,7 +24,20 @@
             <div class="total-played"></div>
             <div class="room-wined"></div>
             <button class="btn btn-ready">Sẵn sàng</button>
+            <div class="circle-progress">
+                <div class="circular-progress circular-progress-player">
+                    <div class="value-container value-container-player"></div>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="info__setting">
+        <label for="">Cài đặt phòng</label>
+        <ul>
+            <li>Mật khẩu: <span class="info__setting-pass"></span></li>
+            <li>Người đi trước: <span class="info__setting-first">chủ phòng</span></li>
+            <li>Thời gian mỗi lượt: <span class="info__setting-time">60s</span></li>
+        </ul>
     </div>
 </div>
 <div class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -43,6 +61,10 @@
                             <option value="host">Chủ phòng</option>
                             <option value="player">Người chơi</option>
                         </select>
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="">Thời gian mỗi lượt</label>
+                        <input type="number" class="form-control" id="timePerTurn" value="60" min="10" max="360" step="1">
                     </div>
                     <div class="mb-3">
                         <label for="">Nước cờ</label>

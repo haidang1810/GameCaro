@@ -21,23 +21,6 @@ $(window).on("load",function(){
     const socket = io('http://localhost:2000/', {transports: ['websocket', 'polling', 'flashsocket']});
     const socketRoom = io('http://localhost:2500/', {transports: ['websocket', 'polling', 'flashsocket']});
 
-
-    let token = getCookie("refreshToken");
-    function checkLogin(){
-        $.post("/refreshToken",{token},function(data){
-            if(data!=null && data!=""){
-                if(data.status==1){
-                    setCookie("accessToken",data.accessToken,40)
-                }else{
-                    location.href = "/";
-                }
-            }
-        })
-        setTimeout(() => {
-            checkLogin();
-        }, 25000);
-    }
-    checkLogin();
     const nickName = $("#nickName_login").val();
     if(nickName)
         socket.emit("user-login-req",nickName);

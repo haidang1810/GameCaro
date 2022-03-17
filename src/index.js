@@ -40,6 +40,20 @@ io.on('connection', socket => {
     })
 });
 
+const checkRefreshToken = (req,res,next) => {
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken) return res.redirect("/");
+    User.findOne({
+        refreshToken
+    }).then((data) => {
+        if(data)
+            next();
+        else
+            return res.redirect("/");
+    }).catch(()=>{
+        return res.redirect("/");
+    })
+}
 app.get('/', (req, res) => {
     const rememberToken = req.cookies.rememberToken;
     if(rememberToken){
@@ -174,9 +188,9 @@ app.post('/register', (req, res) => {
             }
         })    
 });
-app.get('/room', (req, res) => {
-    const cookieRefreshToken = req.cookies.refreshToken;
-    if(!cookieRefreshToken) return res.redirect("/");
+app.get('/room', checkRefreshToken, (req, res) => {
+    
+    if(!req.query.id) return res.redirect("/home");
     var id = req.query.id;
     const cookie = req.cookies.accessToken;
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, dataToken) => {
@@ -190,9 +204,7 @@ app.get('/room', (req, res) => {
         });
     });
 })
-app.get('/home', (req, res) => {
-    const cookieRefreshToken = req.cookies.refreshToken;
-    if(!cookieRefreshToken) return res.redirect("/");
+app.get('/home', checkRefreshToken, (req, res) => {
     const cookie = req.cookies.accessToken;
     jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
         if (err) return res.redirect("/");
@@ -200,7 +212,6 @@ app.get('/home', (req, res) => {
             data
         });
     });
-    
 });
 app.post('/refreshToken', (req, res) => {
     const refreshToken = req.body.token;
@@ -227,6 +238,19 @@ app.post('/refreshToken', (req, res) => {
             });
         })
 });
+app.get('/crown', checkRefreshToken, (req, res) => {
+    const cookie = req.cookies.accessToken;
+    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+        if (err) return res.redirect("/");
+        User.find({}).sort('winTotal')
+            .then((data)=>{
+                if(data) console.log(data);
+            })
+        return res.render('crown',{
+            data
+        });
+    });
+})
 server.listen(port, () => {
     console.log(`server dang lang nghe port: ${port}`);
 });

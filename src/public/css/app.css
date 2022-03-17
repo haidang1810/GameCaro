@@ -155,3 +155,28 @@
 .hide{
     display: none !important;
 }
+.table-crown{
+    margin-top: 20px;
+    padding: 0 150px;
+}
+@media screen and (max-width: 768px){
+    .table-crown{
+        margin-top: 20px;
+        padding: 0 70px;
+    }
+}
+@media screen and (max-width: 576px){
+    .table-crown{
+        margin-top: 20px;
+        padding: 0 20px;
+    }
+}
+.table-dark{
+    background-color: #323259 !important;
+}
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #4A4A77;
+}
+.table-dark thead {
+    border: #000 !important;
+}
