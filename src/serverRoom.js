@@ -124,13 +124,13 @@ let diagonalLeft = (Mat, Cur_row, Cur_col, Value) => {
      //Di sang phia ben phai so voi vi tri hien tai
     col = Cur_col;
     for (let j = Cur_row + 1; j < 16; j++) {
+        col++
         if (Mat[j][col] === Value) {
             count_right_bottom++;
         }
         else {
             break;
         }
-        col++
         if(col>15) break;
     }
     if (count_top_left + count_right_bottom >= 5) {
@@ -155,13 +155,13 @@ let diagonalRight = (Mat, Cur_row, Cur_col, Value) => {
      //Di sang phia ben phai so voi vi tri hien tai
     col = Cur_col;
     for (let j = Cur_row + 1; j < 15; j++) {
+        col--
         if (Mat[j][col] === Value) {
             count_left_bottom++;
         }
         else {
             break;
         }
-        col--
         if(col<0) break;
     }
     if (count_top_right + count_left_bottom >= 5) {
@@ -281,7 +281,6 @@ io.on('connection', socket => {
             }
             return socket.emit("user-join-room-res", err);
         })
-        
     })
     socket.on("create-room-req",function(data){
         let room = new Object({
@@ -534,6 +533,15 @@ io.on('connection', socket => {
             }).then(()=>{
                 console.log("update total lose success");
             }).catch((err)=>{console.log(`update total lose error ${err}`);})
+    })
+    socket.on("send-msg-room-req",function(data){
+        let roomIndex = data.roomIndex-1;
+        if(roomIndex > rooms.length-1) return;
+        if(!data.massage) return;
+        io.sockets.in(rooms[roomIndex].roomID).emit("send-msg-room-res",{
+            nickName: data.nickName,
+            message: data.massage
+        })
     })
     socket.on("disconnect", function(){
         rooms.forEach((value,index) => {

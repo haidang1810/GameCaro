@@ -1,0 +1,62 @@
+<nav>{{> page/header}}</nav>
+<div class="container pt-3">
+    <div class="row panel__profile">
+        <div class="col-xl-3 col-md-5 col-sm-12 panel__profile-left mt-1 mb-3">
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">Lịch sử</li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <strong>Số trận đã chơi</strong> 
+                    <span class="badge badge-pill">{{data.total}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <strong>Số trận thắng</strong> 
+                    <span class="badge badge-pill">{{data.winTotal}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <strong>Số trận thua</strong> 
+                    <span class="badge badge-pill">{{data.loseTotal}}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <strong>Tỉ lệ thắng</strong> 
+                    <span class="badge badge-pill">{{data.percent}}%</span>
+                </li>
+            </ul> 
+        </div>
+        <div class="col-xl-9 col-md-7 col-sm-12">
+            <form method="POST" class="form-profile">
+                <div class="form-group mb-3">
+                    <label for="">Biệt danh</label>
+                    <input type="text" class="form-control" value="{{data.nickName}}" rules='required|min:4|max:40' name="nickName">
+                    <span class="form-message-error"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="">Email</label>
+                    <input type="text" class="form-control" value="{{data.email}}" name="email" rules='required|email'>
+                    <span class="form-message-error"></span>
+                </div>
+                <div class="row justify-content-center mb-3">
+                    <div class="form-group col-10">
+                        <label for="">Mật khẩu</label>
+                        <input type="password" id="input-password" rules='required|min:4|max:20' value="dsadsaueuidsa" class="form-control" name="password" disabled autocomplete="off">
+                        <span class="form-message-error"></span>
+                    </div>
+                    <div class="col-2"><button id="btn-change-pass"  type="button" class="btn btn-link mt-4">Sửa</button></div>
+                </div>
+                <div id="profile__password" class="hide" >
+                    <div class="form-group mb-3">
+                        <label for="">Mật khẩu mới</label>
+                        <input type="password" class="form-control"  name="nPassword" autocomplete="off">
+                        <span class="form-message-error"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="">Nhập lại</label>
+                        <input type="password" class="form-control"  name="cPassword" autocomplete="off">
+                        <span class="form-message-error"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-save-profile">Lưu</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="js/profile.js"></script>

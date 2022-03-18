@@ -44,8 +44,6 @@ $(window).on('load',function(){
             if(data!=null && data!=""){
                 if(data.status==1){
                     setCookie("accessToken",data.accessToken,40)
-                }else{
-                    location.href = "/";
                 }
             }
         })
@@ -54,4 +52,7 @@ $(window).on('load',function(){
         }, 25000);
     }
     checkLogin();
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 })

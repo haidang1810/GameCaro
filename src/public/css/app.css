@@ -3,6 +3,7 @@
     color: #fff;
     font-size: 18px;
 }
+
 .list-room{
     width: 100%;
     height: 485px;
@@ -155,6 +156,23 @@
 .hide{
     display: none !important;
 }
+.stickey-table{
+    margin: 0;
+    padding: 0;
+    max-height: 420px;
+    overflow-y: auto;
+}
+.table-crown h2{
+    display: block;
+    background-color: #A97DFF;
+    color: #fff;
+    width: 100%;
+    font: 35px;
+    margin: 0;
+    text-align: center;
+    font-size: 30px;
+    padding: 10px;
+}
 .table-crown{
     margin-top: 20px;
     padding: 0 150px;
@@ -164,19 +182,54 @@
         margin-top: 20px;
         padding: 0 70px;
     }
+    .stickey-table{
+        margin: 0;
+        padding: 0;
+        max-height: 300px;
+        overflow-y: auto;
+    }
 }
 @media screen and (max-width: 576px){
     .table-crown{
         margin-top: 20px;
         padding: 0 20px;
     }
+
+    .stickey-table{
+        margin: 0;
+        padding: 0;
+        max-height: 150px;
+        overflow-y: auto;
+    }
 }
-.table-dark{
+.table-striped{
     background-color: #323259 !important;
+    color: #fff;
+    text-align: center;
 }
-.table-dark.table-striped tbody tr:nth-of-type(odd) {
+table th,
+table td{
+    white-space: nowrap !important;
+}
+.table-striped tr td,
+.table-striped tr th{
+    border: #000 !important;
+}
+.table-striped tbody tr:nth-of-type(odd) {
     background-color: #4A4A77;
 }
-.table-dark thead {
+.table-striped thead {
     border: #000 !important;
+}
+
+.stickey-table table thead tr th{
+    background-color: #323259;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+.player-ratting{
+    text-align: right;
+    font-size: 18px;
+    color: #e9e9e9;
 }

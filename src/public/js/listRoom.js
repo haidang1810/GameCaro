@@ -20,7 +20,7 @@ $(window).on("load",function(){
     );
     const socket = io('http://localhost:2000/', {transports: ['websocket', 'polling', 'flashsocket']});
     const socketRoom = io('http://localhost:2500/', {transports: ['websocket', 'polling', 'flashsocket']});
-
+    
     const nickName = $("#nickName_login").val();
     if(nickName)
         socket.emit("user-login-req",nickName);
@@ -33,13 +33,12 @@ $(window).on("load",function(){
         `)
     })
     $(".form-send-message").submit(function(e){
-        let massage = $(".input-message").val();
+        let message = $(".input-message").val();
         e.preventDefault();
         let data = {
             nickName,
-            massage
+            message
         }
-        console.log("send data");
         socket.emit("user-send-message",data);
         $(".input-message").val("");
     })
@@ -47,7 +46,7 @@ $(window).on("load",function(){
         $(".chat__boxed-message").append(`
             <div class="chat-item">
                 <span class="chat-user">${data.nickName}: </span>
-                <span class="chat-content"> ${data.massage}</span>
+                <span class="chat-content"> ${data.message}</span>
             </div>
         `)
     })

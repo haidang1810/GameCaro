@@ -1,0 +1,26 @@
+.panel__profile{
+    color: #fff;
+}
+.panel__profile-left .list-group-item{
+    background: #1A1B37;
+    color: #fff;
+}
+.panel__profile-left .list-group-header{
+    background: #323259;
+    color: #fff !important;
+}
+.list-group-item{
+    border: 1px solid #1b1b2e !important;
+}
+#btn-change-pass{
+    outline: none !important;
+}
+.btn-save-profile{
+    background-color: #A97DFF;
+    color: #fff;
+    padding: 5px 15px;
+}
+.form-message-error{
+    font-size: 16px;
+    color: #ff614f;
+}

@@ -1,34 +1,25 @@
 <nav>{{> page/header}}</nav>
 <div class="container table-crown">
-    <table class="table table-striped table-dark">
-        <thead>
-            <tr>
-            <th scope="col">Top</th>
-            <th scope="col">Biệt danh</th>
-            <th scope="col">Số trận thắng</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Hahaha</td>
-                <td>15</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Vippro113</td>
-                <td>10</td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td>Hahaha</td>
-                <td>15</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Vippro113</td>
-                <td>10</td>
-            </tr>
-        </tbody>
-    </table>
+    <h2>Top thắng nhiều nhất</h2>
+    <div class="stickey-table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Top</th>
+                    <th scope="col">Biệt danh</th>
+                    <th scope="col">Số trận thắng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each data.players}}
+                <tr>
+                    <th scope="row">{{this.top}}</th>
+                    <td>{{this.nickName}}</td>
+                    <td>{{this.winTotal}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <p class="player-ratting">Hạng của bạn: {{ data.playerRating}}</p>
 </div>

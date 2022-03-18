@@ -28,11 +28,22 @@ body{
   margin: 0;
 }
 .form__input{
-  
   position: relative;
   margin: 0;
   padding: 0;
 }
+.btn-verify{
+  border: none;
+  background: transparent;
+  position: absolute;
+  right: 10px;
+  top: 25%;
+}
+.btn-verify i{
+  font-size: 22px;
+  color: #7b66f4;
+}
+
 .form__input-text{
   padding-left: 30px;
   border-radius: 0;
