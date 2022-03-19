@@ -4,8 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon --inspect src/index.js",
-    "startRoom": "nodemon --inspect src/serverRoom.js",
+    "startServer": "nodemon --inspect src/index.js",
+    "start": "node --inspect src/index.js",
+    "startRoom": "node --inspect src/serverRoom.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
