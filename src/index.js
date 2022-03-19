@@ -2,7 +2,7 @@
 const path = require('path');
 const express = require('express');
 const { engine } = require('express-handlebars');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 2000;
 const app = express();
 const  db = require('./config/db')
 const User = require('./app/db/User');
