@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
 const express = require('express');
-const port = 2500;
+const port = process.env.PORT || 2500;
 const  db = require('./config/db')
 const app = express();
 const server = require("http").Server(app);
