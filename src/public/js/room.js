@@ -25,7 +25,7 @@ $(window).on("load",function(){
 
     const nickName = $("#nickName_login").val();
     var player = "";
-    const socketRoom = io('http://localhost:2500/', {transports: ['websocket', 'polling', 'flashsocket']});
+    const socketRoom = io('http://42.117.96.2:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
     const roomIndex = $(".room-title").attr('roomIndex');
     let data_join_room = {
         nickName,
@@ -71,7 +71,7 @@ $(window).on("load",function(){
         $(".info-player-two").children(".player-name").html("Biệt danh:");
         $(".info-player-two").children(".total-played").html("Số trận đã chơi:");
         $(".info-player-two").children(".room-wined").html("0");
-        $(".info-player-one").children(".player-name").html(`Biệt danh: ${data.nickName}`);
+        $(".info-player-one").children(".player-name").html(`Biệt danh: ${nickName}`);
         $(".info-player-one").children(".total-played").html(`Số trận đã chơi: ${data.winTotal+data.loseTotal}`);
         $(".info-player-one").children(".room-wined").html(data.roomWined);
         $(".room__game-header i").removeClass("hide");
@@ -391,6 +391,7 @@ $(window).on("load",function(){
                 <span class="chat-content"> ${data.message}</span>
             </div>
         `)
+        $(".chat__room-message").scrollTop( $(".chat__room-message").scrollTop()+100 );
         $.playSound('/sounds/sound.mp3');
     })
 })

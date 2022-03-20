@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
 const express = require('express');
-const port = process.env.PORT || 2500;
+const port = process.env.PORT_ROOM || 3333;
 const  db = require('./config/db')
 const app = express();
 const server = require("http").Server(app);
@@ -286,11 +286,13 @@ io.on('connection', socket => {
         let room = new Object({
             roomID: socket.id,
             password: data,
-            host: ["","",0], //0 là số trận thắng trong rooms
-            player: ["","",0],
+            host: ["","",0],
+            player: ["","",0,false],
             board: JSON.parse(JSON.stringify(board)),
             playerFirst: "host",
-            char: "X"
+            char: "X",
+            isStart: false,
+            timePerTurn: 60
         });
         rooms.push(room);
         let roomIndex = rooms.findIndex(r => r.roomID == socket.id);

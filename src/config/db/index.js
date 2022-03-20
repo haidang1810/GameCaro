@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 async function connect(){
     try {
-        const MONGO_URI = 'mongodb+srv://danghuynh:dang1810@cluster0.meq5z.mongodb.net/gamecaro?retryWrites=true&w=majority';
-        await mongoose.connect(MONGO_URI,{
+        //const mongo_uri = 'mongodb+srv://danghuynh:dang1810@cluster0.meq5z.mongodb.net/gamecaro?retryWrites=true&w=majority';
+        await mongoose.connect('mongodb://localhost:27017/gamecaro',{
             useNewUrlParser: true,
             useUnifiedTopology: true
         });

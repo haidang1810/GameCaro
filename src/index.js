@@ -40,18 +40,32 @@ io.on('connection', socket => {
 
 const checkRefreshToken = (req,res,next) => {
     const refreshToken = req.cookies.refreshToken;
-    if(!refreshToken) return res.redirect("/");
-    User.findOne({
-        refreshToken
-    }).then((data) => {
-        if(data)
-            next();
-        else
+    if(!refreshToken) {
+        const rememberToken = req.cookies.rememberToken;
+        if(rememberToken){
+            User.findOne({rememberToken})
+                .then((data) => {
+                    if(data){
+                        jwt.verify(rememberToken, process.env.ACCESS_TOKEN_SECRET, (err, dataRemember) => {
+                            next();
+                        });
+                    }else return res.redirect("/");
+                })
+        }else return res.redirect("/");
+    }else{
+        User.findOne({
+            refreshToken
+        }).then((data) => {
+            if(data)
+                next();
+            else
+                return res.redirect("/");
+        }).catch(()=>{
             return res.redirect("/");
-    }).catch(()=>{
-        return res.redirect("/");
-    })
+        })
+    }
 }
+
 app.get('/', (req, res) => {
     const rememberToken = req.cookies.rememberToken;
     if(rememberToken){
@@ -64,15 +78,17 @@ app.get('/', (req, res) => {
                     });
                 }else return res.render('login');
             })
+    }else{
+        const cookieRefreshToken = req.cookies.refreshToken;
+        if(!cookieRefreshToken) return res.render('login');
+        const cookie = req.cookies.accessToken;
+        if(!cookie) return res.render('login');
+        jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+            if(err) return res.render('login');
+            return res.redirect('/home');
+        });
     }
-    const cookieRefreshToken = req.cookies.refreshToken;
-    if(!cookieRefreshToken) return res.render('login');
-    const cookie = req.cookies.accessToken;
-    if(!cookie) return res.render('login');
-    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        if(err) return res.render('login');
-        return res.redirect('/home');
-    });
+    
     
 });
 app.post('/', (req, res) => {
@@ -101,7 +117,7 @@ app.post('/', (req, res) => {
                                 return res.json({
                                     status: 1,
                                     msg: "login success!",
-                                    cookie: hash,
+                                    cookie: cookie,
                                     accessToken,
                                     refreshToken
                                 })
@@ -187,148 +203,201 @@ app.post('/register', (req, res) => {
         })    
 });
 app.get('/room', checkRefreshToken, (req, res) => {
-    
     if(!req.query.id) return res.redirect("/home");
     var id = req.query.id;
-    const cookie = req.cookies.accessToken;
-    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, dataToken) => {
-        let data = {
-            id,
-            nickName: dataToken.nickName
-        };
-        if (err) return res.redirect("/");
-        return res.render('room/room',{
-            data
+    const rememberToken = req.cookies.rememberToken;
+    if(rememberToken){
+        User.findOne({rememberToken})
+            .then((data) => {
+                if(data){
+                    jwt.verify(rememberToken, process.env.ACCESS_TOKEN_SECRET, (err, dataRemember) => {
+                        let data = {
+                            id,
+                            nickName: dataRemember.nickName
+                        };
+                        if (err) return res.redirect("/");
+                        return res.render('room/room',{
+                            data
+                        });
+                    });
+                }
+            })
+    }else{
+        const cookie = req.cookies.accessToken;
+        jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, dataToken) => {
+            let data = {
+                id,
+                nickName: dataToken.nickName
+            };
+            if (err) return res.redirect("/");
+            return res.render('room/room',{
+                data
+            });
         });
-    });
+    }
 })
 app.get('/home', checkRefreshToken, (req, res) => {
-    const cookie = req.cookies.accessToken;
-    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        if (err) return res.redirect("/");
-        return res.render('room/listRoom',{
-            data
+    const rememberToken = req.cookies.rememberToken;
+    if(rememberToken){
+        User.findOne({rememberToken})
+            .then((data) => {
+                if(data){
+                    jwt.verify(rememberToken, process.env.ACCESS_TOKEN_SECRET, (err, dataRemember) => {
+                        if (err) return res.redirect("/");
+                        return res.render('room/listRoom',{
+                            data: dataRemember
+                        });
+                    });
+                }else{
+                    const cookie = req.cookies.accessToken;
+                    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+                        if (err) return res.redirect("/");
+                        return res.render('room/listRoom',{
+                            data
+                        });
+                    });
+                }
+            })
+    }else{
+        const cookie = req.cookies.accessToken;
+        jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+            if (err) return res.redirect("/");
+            return res.render('room/listRoom',{
+                data
+            });
         });
-    });
+    }
 });
 app.post('/refreshToken', (req, res) => {
-    const refreshToken = req.body.token;
-    if (!refreshToken) return res.redirect("/");
-    User.findOne({refreshToken})
-        .then((dataDB)=>{
-            if(dataDB){
-                jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
-                    if (err) return res.redirect("/");
-                    const accessToken = jwt.sign({ nickName: data.nickName },process.env.ACCESS_TOKEN_SECRET,{
-                        expiresIn: '40s',
+    const rememberToken = req.cookies.rememberToken;
+    if(rememberToken){
+        User.findOne({rememberToken})
+            .then((data) => {
+                if(data){
+                    jwt.verify(rememberToken, process.env.ACCESS_TOKEN_SECRET, (err, dataRemember) => {
+                        if (err) return res.redirect("/");
+                        const accessToken = jwt.sign({ nickName: data.nickName },process.env.ACCESS_TOKEN_SECRET,{
+                            expiresIn: '40s',
+                        });
+                        return res.json({ status: 1, accessToken });
                     });
-                    return res.json({ status: 1, accessToken });
-                });
-            }else return res.redirect("/");
-        }).catch(()=>{
-            return res.redirect("/");
-        })
+                }else return res.redirect("/");
+            })
+    }else{
+        const refreshToken = req.body.token;
+        if (!refreshToken) return res.redirect("/");
+        User.findOne({refreshToken})
+            .then((dataDB)=>{
+                if(dataDB){
+                    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
+                        if (err) return res.redirect("/");
+                        const accessToken = jwt.sign({ nickName: data.nickName },process.env.ACCESS_TOKEN_SECRET,{
+                            expiresIn: '40s',
+                        });
+                        return res.json({ status: 1, accessToken });
+                    });
+                }else return res.redirect("/");
+            }).catch(()=>{
+                return res.redirect("/");
+            })
+    }
 });
 app.get('/crown', checkRefreshToken, (req, res) => {
     const cookie = req.cookies.accessToken;
-    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        if (err) return res.redirect("/");
-        User.find({}).sort('winTotal')
-            .then((dataDB)=>{
-                if(dataDB){
-                    dataDB.reverse();
-                    var players = new Array();
-                    let playerRating = 0;
-                    dataDB.forEach((value,index) => {
-                        let top = index+1;
-                        let player = {
-                            top,
-                            nickName: value.nickName,
-                            winTotal: value.winTotal
-                        }
-                        players.push(player);
-                        if(data.nickName==value.nickName)
-                            playerRating = index+1;
-                    })
-                    data.players = players;
-                    data.playerRating = playerRating;
-                    return res.render('crown',{
-                        data
+    if(!cookie){
+        const rememberToken = req.cookies.rememberToken;
+        if(rememberToken){
+            User.findOne({rememberToken})
+                .then((data) => {
+                    if(data){
+                        cookie = rememberToken;
+                    }else return res.redirect("/");
+                    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+                        if (err) return res.redirect("/");
+                        User.find({}).sort('winTotal')
+                            .then((dataDB)=>{
+                                if(dataDB){
+                                    dataDB.reverse();
+                                    var players = new Array();
+                                    let playerRating = 0;
+                                    dataDB.forEach((value,index) => {
+                                        let top = index+1;
+                                        let player = {
+                                            top,
+                                            nickName: value.nickName,
+                                            winTotal: value.winTotal
+                                        }
+                                        players.push(player);
+                                        if(data.nickName==value.nickName)
+                                            playerRating = index+1;
+                                    })
+                                    data.players = players;
+                                    data.playerRating = playerRating;
+                                    return res.render('crown',{
+                                        data
+                                    });
+                                }
+                            }).catch(()=>{return res.redirect("/");})
+                        
                     });
-                }
-            }).catch(()=>{return res.redirect("/");})
-        
-    });
+                })
+        }else return res.redirect("/");
+    }
 })
 app.get("/profile", checkRefreshToken, (req,res)=>{
     const cookie = req.cookies.accessToken;
-    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        if (err) return res.redirect("/");
-        User.findOne({nickName: data.nickName})
-            .then((dataDB)=>{
-                if(dataDB){
-                    data.winTotal = dataDB.winTotal;
-                    data.loseTotal = dataDB.loseTotal;
-                    data.total = dataDB.loseTotal+dataDB.winTotal;
-                    data.percent = (data.winTotal/data.total*100).toFixed(1);
-                    data.email = dataDB.email;
-                    return res.render('profile',{
-                        data
+    if(!cookie){
+        const rememberToken = req.cookies.rememberToken;
+        if(rememberToken){
+            User.findOne({rememberToken})
+                .then((data) => {
+                    if(data){
+                        cookie = rememberToken;
+                    }else return res.redirect("/");
+                    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+                        if (err) return res.redirect("/");
+                        User.findOne({nickName: data.nickName})
+                            .then((dataDB)=>{
+                                if(dataDB){
+                                    data.winTotal = dataDB.winTotal;
+                                    data.loseTotal = dataDB.loseTotal;
+                                    data.total = dataDB.loseTotal+dataDB.winTotal;
+                                    data.percent = (data.winTotal/data.total*100).toFixed(1);
+                                    data.email = dataDB.email;
+                                    return res.render('profile',{
+                                        data
+                                    });
+                                }
+                            }).catch(()=>{return res.redirect("/");})
+                        
                     });
-                }
-            }).catch(()=>{return res.redirect("/");})
-        
-    });
+                })
+        }else return res.redirect("/");
+    }
 })
 app.post("/profile", checkRefreshToken, (req,res)=>{
     const cookie = req.cookies.accessToken;
-    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        if (err) return res.redirect("/");
-        if(!req.body.cPassword && !req.body.nPassword){
-            console.log("req", req);
-            User.updateOne({nickName: data.nickName},{
-                nickName: req.body.nickName, 
-                email: req.body.email
-            })
-                .then(()=>{
-                    res.json({
-                        status: 1,
-                        msg: "Cập nhật thành công. Bạn sẽ được chuyển đến trang đăng nhập"
-                    });
-                })
-                .catch(()=>{
-                    res.json({
-                        status: 2,
-                        msg: "Lỗi server !!!"
-                    })
-                })
-        }else{
-            User.findOne({nickName: data.nickName})
-                .then((dataDB) => {
-                    bcrypt.compare(req.body.password, dataDB.password, function(err, result) {
-                        if(err) res.json({
-                            status: 2,
-                            msg: "Lỗi server !!!"
-                        })
-                        if(result){
-                            bcrypt.hash(req.body.nPassword, saltRounds, function(err, hash) {
-                                if(err) res.json({
-                                    status: 2,
-                                    msg: "Lỗi server !!!"
-                                })
-                                let password = hash;
-                
-                                const user = {
-                                    nickName: req.body.nickName,
-                                    email: req.body.email,
-                                    password
-                                };
-                                User.updateOne({nickName: dataDB.nickName},user)
-                                .then(() => {
+    if(!cookie){
+        const rememberToken = req.cookies.rememberToken;
+        if(rememberToken){
+            User.findOne({rememberToken})
+                .then((data) => {
+                    if(data){
+                        cookie = rememberToken;
+                    }else return res.redirect("/");
+                    jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+                        if (err) return res.redirect("/");
+                        if(!req.body.cPassword && !req.body.nPassword){
+                            console.log("req", req);
+                            User.updateOne({nickName: data.nickName},{
+                                nickName: req.body.nickName, 
+                                email: req.body.email
+                            })
+                                .then(()=>{
                                     res.json({
                                         status: 1,
-                                        msg: "Cập nhật thành công. Bạn sẽ được chuyển đến trang đăng nhập.",
-                                    })
+                                        msg: "Cập nhật thành công. Bạn sẽ được chuyển đến trang đăng nhập"
+                                    });
                                 })
                                 .catch(()=>{
                                     res.json({
@@ -336,18 +405,56 @@ app.post("/profile", checkRefreshToken, (req,res)=>{
                                         msg: "Lỗi server !!!"
                                     })
                                 })
-                            });
                         }else{
-                            res.json({
-                                status: 2,
-                                msg: "Mật khẩu không chính xác !"
-                            })
+                            User.findOne({nickName: data.nickName})
+                                .then((dataDB) => {
+                                    bcrypt.compare(req.body.password, dataDB.password, function(err, result) {
+                                        if(err) res.json({
+                                            status: 2,
+                                            msg: "Lỗi server !!!"
+                                        })
+                                        if(result){
+                                            bcrypt.hash(req.body.nPassword, saltRounds, function(err, hash) {
+                                                if(err) res.json({
+                                                    status: 2,
+                                                    msg: "Lỗi server !!!"
+                                                })
+                                                let password = hash;
+                                
+                                                const user = {
+                                                    nickName: req.body.nickName,
+                                                    email: req.body.email,
+                                                    password
+                                                };
+                                                User.updateOne({nickName: dataDB.nickName},user)
+                                                .then(() => {
+                                                    res.json({
+                                                        status: 1,
+                                                        msg: "Cập nhật thành công. Bạn sẽ được chuyển đến trang đăng nhập.",
+                                                    })
+                                                })
+                                                .catch(()=>{
+                                                    res.json({
+                                                        status: 2,
+                                                        msg: "Lỗi server !!!"
+                                                    })
+                                                })
+                                            });
+                                        }else{
+                                            res.json({
+                                                status: 2,
+                                                msg: "Mật khẩu không chính xác !"
+                                            })
+                                        }
+                                    });
+                                })
+                            
                         }
                     });
                 })
-            
-        }
-    });
+        }else return res.redirect("/");
+    }
+    
 })
 app.get("/forgot", (req, res) => {
     res.render("forgotPassword");
