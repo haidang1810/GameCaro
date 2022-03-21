@@ -408,7 +408,6 @@ io.on('connection', socket => {
                 };
                 socket.emit("user-click-res",user_click_req);
             }
-            console.log("board sau khi click",board);
         }else if(socket.id == rooms[roomIndex].host[0]){
             if(rooms[roomIndex].playerFirst=='host'){
                 if(rooms[roomIndex].board[r][c] == "NULL"){
@@ -435,7 +434,6 @@ io.on('connection', socket => {
                 };
                 socket.emit("user-click-res",user_click_req);
             }
-            console.log("board sau khi click",board);
         }
         if(horizontal(rooms[roomIndex].board,r,c,playerChar)
         || vertically(rooms[roomIndex].board,r,c,playerChar)
@@ -637,11 +635,15 @@ io.on('connection', socket => {
                             io.sockets.in(rooms[index].host[0]).emit("end-game-res",dataWin);
                         }
                         rooms[index].isStart = false;
-                        return;
+                    }
+                    if([0,1,2].indexOf(index)===-1 && rooms[index].host[0]===""&& rooms[index].player[0]===""){
+                        rooms.splice(index,1);
+                        io.sockets.emit("listRoom-res", rooms);
                     }
                 })
                 
             }
+            
         })
     })
 });
