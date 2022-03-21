@@ -30,7 +30,8 @@ $(window).on("load",function(){
                 <span class="chat-user">${data}: </span>
                 <span class="chat-content"> Vừa gia nhập phòng chờ</span>
             </div>
-        `)
+        `);
+        $(".chat__boxed-message").scrollTop( $(".chat__boxed-message").scrollTop()+100 );
     })
     $(".form-send-message").submit(function(e){
         let message = $(".input-message").val();
@@ -49,6 +50,7 @@ $(window).on("load",function(){
                 <span class="chat-content"> ${data.message}</span>
             </div>
         `)
+        $(".chat__boxed-message").scrollTop( $(".chat__boxed-message").scrollTop()+100 );
     })
     socketRoom.emit("listRoom-req","");
     socketRoom.on("listRoom-res",function(data){

@@ -342,6 +342,35 @@ app.get('/crown', checkRefreshToken, (req, res) => {
                     });
                 })
         }else return res.redirect("/");
+    }else{
+        jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+            if (err) return res.redirect("/");
+            User.find({}).sort('winTotal')
+                .then((dataDB)=>{
+                    if(dataDB){
+                        dataDB.reverse();
+                        var players = new Array();
+                        let playerRating = 0;
+                        dataDB.forEach((value,index) => {
+                            let top = index+1;
+                            let player = {
+                                top,
+                                nickName: value.nickName,
+                                winTotal: value.winTotal
+                            }
+                            players.push(player);
+                            if(data.nickName==value.nickName)
+                                playerRating = index+1;
+                        })
+                        data.players = players;
+                        data.playerRating = playerRating;
+                        return res.render('crown',{
+                            data
+                        });
+                    }
+                }).catch(()=>{return res.redirect("/");})
+            
+        });
     }
 })
 app.get("/profile", checkRefreshToken, (req,res)=>{
@@ -373,6 +402,24 @@ app.get("/profile", checkRefreshToken, (req,res)=>{
                     });
                 })
         }else return res.redirect("/");
+    }else{
+        jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+            if (err) return res.redirect("/");
+            User.findOne({nickName: data.nickName})
+                .then((dataDB)=>{
+                    if(dataDB){
+                        data.winTotal = dataDB.winTotal;
+                        data.loseTotal = dataDB.loseTotal;
+                        data.total = dataDB.loseTotal+dataDB.winTotal;
+                        data.percent = (data.winTotal/data.total*100).toFixed(1);
+                        data.email = dataDB.email;
+                        return res.render('profile',{
+                            data
+                        });
+                    }
+                }).catch(()=>{return res.redirect("/");})
+            
+        });
     }
 })
 app.post("/profile", checkRefreshToken, (req,res)=>{
@@ -453,6 +500,73 @@ app.post("/profile", checkRefreshToken, (req,res)=>{
                     });
                 })
         }else return res.redirect("/");
+    }else{
+        jwt.verify(cookie, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
+            if (err) return res.redirect("/");
+            if(!req.body.cPassword && !req.body.nPassword){
+                console.log("req", req);
+                User.updateOne({nickName: data.nickName},{
+                    nickName: req.body.nickName, 
+                    email: req.body.email
+                })
+                    .then(()=>{
+                        res.json({
+                            status: 1,
+                            msg: "Cập nhật thành công. Bạn sẽ được chuyển đến trang đăng nhập"
+                        });
+                    })
+                    .catch(()=>{
+                        res.json({
+                            status: 2,
+                            msg: "Lỗi server !!!"
+                        })
+                    })
+            }else{
+                User.findOne({nickName: data.nickName})
+                    .then((dataDB) => {
+                        bcrypt.compare(req.body.password, dataDB.password, function(err, result) {
+                            if(err) res.json({
+                                status: 2,
+                                msg: "Lỗi server !!!"
+                            })
+                            if(result){
+                                bcrypt.hash(req.body.nPassword, saltRounds, function(err, hash) {
+                                    if(err) res.json({
+                                        status: 2,
+                                        msg: "Lỗi server !!!"
+                                    })
+                                    let password = hash;
+                    
+                                    const user = {
+                                        nickName: req.body.nickName,
+                                        email: req.body.email,
+                                        password
+                                    };
+                                    User.updateOne({nickName: dataDB.nickName},user)
+                                    .then(() => {
+                                        res.json({
+                                            status: 1,
+                                            msg: "Cập nhật thành công. Bạn sẽ được chuyển đến trang đăng nhập.",
+                                        })
+                                    })
+                                    .catch(()=>{
+                                        res.json({
+                                            status: 2,
+                                            msg: "Lỗi server !!!"
+                                        })
+                                    })
+                                });
+                            }else{
+                                res.json({
+                                    status: 2,
+                                    msg: "Mật khẩu không chính xác !"
+                                })
+                            }
+                        });
+                    })
+                
+            }
+        });
     }
     
 })
