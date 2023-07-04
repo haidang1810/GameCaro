@@ -18,8 +18,8 @@ $(window).on("load",function(){
     events.forEach(eventName =>
         window.addEventListener(eventName, eventLogger)
     );
-    const socket = io('http://42.117.96.2:2000/', {transports: ['websocket', 'polling', 'flashsocket']});
-    const socketRoom = io('http://42.117.96.2:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
+    const socket = io('http://https://game-caro-seven.vercel.app:2000/', {transports: ['websocket', 'polling', 'flashsocket']});
+    const socketRoom = io('http://https://game-caro-seven.vercel.app:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
     
     const nickName = $("#nickName_login").val();
     if(nickName)
