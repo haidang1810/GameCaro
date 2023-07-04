@@ -25,7 +25,7 @@ $(window).on("load",function(){
 
     const nickName = $("#nickName_login").val();
     var player = "";
-    const socketRoom = io('http://https://game-caro-seven.vercel.app:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
+    const socketRoom = io('http://13.211.158.214:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
     const roomIndex = $(".room-title").attr('roomIndex');
     let data_join_room = {
         nickName,
