@@ -25,7 +25,7 @@ $(window).on("load",function(){
 
     const nickName = $("#nickName_login").val();
     var player = "";
-    const socketRoom = io('http://13.211.158.214:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
+    const socketRoom = io('http://52.65.109.88:3333/', {transports: ['websocket', 'polling', 'flashsocket']});
     const roomIndex = $(".room-title").attr('roomIndex');
     let data_join_room = {
         nickName,
